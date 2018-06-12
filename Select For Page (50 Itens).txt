@@ -1,0 +1,30 @@
+// Select just one particular page
+// Example: Select page of 50 itens each: 
+// Auxiliar code:
+// 
+// *--- Calcula o inicio da pagina                             
+//      COMPUTE GD-PAG-INI = ( ( ( GD-NR-PAG - 1 ) * 50 ) + 1 )
+//               ON SIZE ERROR                                 
+//                  PERFORM 999080-ERRO-080                    
+//      END-COMPUTE                                            
+//                                                             
+// *--- Calcula o fim da pagina                                
+//      COMPUTE GD-PAG-FIM = ( GD-NR-PAG * 50 )                
+//               ON SIZE ERROR                                 
+//                  PERFORM 999090-ERRO-090                    
+//      END-COMPUTE                                            
+
+SELECT  A                                 
+     ,  B                                     
+  FROM  (SELECT ROW_NUMBER()                      
+         OVER (ORDER BY A , B) AS RN ,
+               A                          
+             , B                              
+             , C                    
+         FROM   DB2.TAB_ONE            
+         WHERE  C =                 
+                  :GD-VARIABLE-C)           
+         WHERE  C =                 
+                  :GD-VARIABLE-C            
+   AND RN BETWEEN :GD-PAG-INI                     
+   AND            :GD-PAG-FIM;                     
